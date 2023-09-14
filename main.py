@@ -22,20 +22,22 @@ if __name__ == '__main__':
             Weather.index = range(0,len(Weather))
 
 
+    Total = pd.merge(Solar, Weather, how='inner',on="DeliveryDT")
+
+    Total.corr() #숫자만 있어야하는데 날짜같은거 있으면 오류남
 
 
 
 
 
 
-
-    merge_df = pd.DataFrame()
-
-    file_list = glob.glob(pa.Loc2)
-
-    for f in file_list:
-        df = pd.read_csv(f)
-        merge_df = merge_df.append(df, ignore_index=True)
+    # merge_df = pd.DataFrame()
+    #
+    # file_list = glob.glob(pa.Loc2)
+    #
+    # for f in file_list:
+    #     df = pd.read_csv(f)
+    #     merge_df = merge_df.append(df, ignore_index=True)
 
 
     print('a')
