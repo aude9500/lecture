@@ -5,6 +5,7 @@ import params as pa
 import os
 import glob
 
+###
 if __name__ == '__main__':
     File = "Solar_4.csv"
     Solar = pr.DataReader(pa.Loc, File)
