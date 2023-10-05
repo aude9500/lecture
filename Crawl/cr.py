@@ -46,8 +46,9 @@ def gen(): #TargetDay,Farm,Method
     print('login')
     time.sleep(pa.waitseconds)
 
-    driver.find_element(By.XPATH, '//*[@id="form1"]/div[4]').click()
-
+    driver.find_element(By.XPATH, '//*[@id="form1"]/div[4]/div[1]/div/ul[2]/a[5]/li').click()
+    print('Statistical Report')
+    time.sleep(pa.waitseconds)
 
 
     return []
