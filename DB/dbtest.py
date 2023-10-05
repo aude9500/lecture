@@ -19,6 +19,20 @@ def DataReader(Schema, Table, Col, Value):
 
 
     return Data
+def DataInsert(Schema, Table, Col1, Value1, Col2, Value2):
+    query =(""" INSERT INTO "%s"."%s" ("%s", "%s") values ('%s', '%s') """ %(Schema, Table, Col1, Col2, Value1, Value2))
+    conn = psycopg2.connect(host=pa.host,
+                            dbname=pa.dbname,
+                            user=pa.user,
+                            password=pa.password,
+                            port=pa.port)
+    cur = conn.cursor()
+    cur.execute(query)
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return[]
 
 
 if __name__ == '__main__':
@@ -27,6 +41,8 @@ if __name__ == '__main__':
     Col = 'name'
     Value = "Moon"
     Data = DataReader(Schema, Table, Col, Value)
+
+    DataInsert(Schema, Table, 'name', 'Yoon','studentnumber', 4564658)
 
     print("a")
 
