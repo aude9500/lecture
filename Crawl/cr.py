@@ -46,6 +46,10 @@ def gen(): #TargetDay,Farm,Method
     print('login')
     time.sleep(pa.waitseconds)
 
+    driver.find_element(By.XPATH, '//*[@id="form1"]/div[4]').click()
+
+
+
     return []
 
 if __name__ == '__main__':  #cr.py 실행하면 얘부터 실행 다른 곳에서 함수 불러올 때는 위에서부터 쭈욱 사용
