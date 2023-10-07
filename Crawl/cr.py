@@ -32,7 +32,7 @@ def driversetting(DownloadPath):    #웹 들어가서 세팅하는 것 묻지도
 
     return driver
 
-def gen(): #TargetDay,Farm,Method
+def gen(Farm): #TargetDay,Farm,Method
     DownloadPath = r"\Users\khs\Downloads\Advanced"
     driver = driversetting(DownloadPath)
 
@@ -51,9 +51,17 @@ def gen(): #TargetDay,Farm,Method
     time.sleep(pa.waitseconds)
 
 
+    driver.find_element(By.XPATH, '//*[@id="SrTop_cbo_plant"]/option[' + str(Farm) + ']').click()
+    print('Select Farm')
+    time.sleep(pa.waitseconds)
+
+    driver.find_element(By.XPATH, '//*[@id="SrTop_cbo_plant"]/option[' + str(Farm) + ']').click()
+
+
+
     return []
 
 if __name__ == '__main__':  #cr.py 실행하면 얘부터 실행 다른 곳에서 함수 불러올 때는 위에서부터 쭈욱 사용
-    # Farm = 1
+    Farm = 1
     # TargetDay = '2023-09-10'
     gen()
