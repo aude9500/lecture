@@ -3,9 +3,9 @@ Loc = r"C:\Users\khs\Downloads\Data4\Data4"
 
 waitseconds = 2
 
-CHROME_DRIVER_PATH = r"C:\Users\khs\Downloads\chromedriver_mac64"
 HYOSUNG = 'http://hess.hyosung.com/HsMain/HM020.aspx'
 
+DownloadPath = r"\Users\aude3\Downloads\Advanced"
 
 #아래는 가급적 다른 파일에 저장하는게 좋다
 user = 'postgres'

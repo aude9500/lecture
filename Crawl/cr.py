@@ -32,9 +32,8 @@ def driversetting(DownloadPath):    #웹 들어가서 세팅하는 것 묻지도
 
     return driver
 
-def gen(Farm): #TargetDay,Farm,Method
-    DownloadPath = r"\Users\khs\Downloads\Advanced"
-    driver = driversetting(DownloadPath)
+def gen(Farm,TargetDay): #TargetDay,Farm,Method
+    driver = driversetting(pa.DownloadPath)
 
     driver.get(pa.HYOSUNG)
     print('run website')
@@ -46,6 +45,11 @@ def gen(Farm): #TargetDay,Farm,Method
     print('login')
     time.sleep(pa.waitseconds)
 
+    # 계속 뜨는 팝업 닫기
+    driver.find_element(By.XPATH, '// *[ @ id = "popupContainer"]/div/div/div/div[2]/button[2]').click()
+    print('팝업 닫기')
+    time.sleep(pa.waitseconds)
+
     driver.find_element(By.XPATH, '//*[@id="form1"]/div[4]/div[1]/div/ul[2]/a[5]/li').click()
     print('Statistical Report')
     time.sleep(pa.waitseconds)
@@ -55,7 +59,42 @@ def gen(Farm): #TargetDay,Farm,Method
     print('Select Farm')
     time.sleep(pa.waitseconds)
 
-    driver.find_element(By.XPATH, '//*[@id="SrTop_cbo_plant"]/option[' + str(Farm) + ']').click()
+    driver.find_element(By.XPATH, '//*[@id="txt_Calendar"]').clear()
+    time.sleep(pa.waitseconds)
+
+    driver.find_element(By.XPATH, '//*[@id="txt_Calendar"]').send_keys(TargetDay)
+    print('Put new Date')
+    time.sleep(pa.waitseconds)
+
+    driver.find_element(By.XPATH, '//*[@id="txt_Calendar"]').send_keys(Keys.ENTER)
+    print('Close the calendar')
+    time.sleep(pa.waitseconds)
+
+    driver.find_element(By.XPATH, '//*[ @ id = "submitbtn"]').click()
+    print('Search')
+    time.sleep(pa.waitseconds)
+
+    driver.find_element(By.XPATH, '// *[ @ id = "exldownbtn"]').click()
+    print('Download')
+    time.sleep(pa.waitseconds)
+
+    while 1:
+        file = os.listdir(pa.DownloadPath)
+        if len(file) == 0:
+            count = count + 1
+            time.sleep(pa.waitseconds)
+            if count == 10:
+                break                               #30초 기다리고 없으면 빠져나와라
+
+        elif len(file) > 1:
+            break
+
+        elif len(file) == 1:
+
+            if file == 'TimeData_'+ TargetDay+'.xls':
+                FileName =  os.path.join(pa.DownloadPath,file)
+                Data = pd.read_csv(FileName)
+
 
 
 
@@ -63,5 +102,5 @@ def gen(Farm): #TargetDay,Farm,Method
 
 if __name__ == '__main__':  #cr.py 실행하면 얘부터 실행 다른 곳에서 함수 불러올 때는 위에서부터 쭈욱 사용
     Farm = 1
-    # TargetDay = '2023-09-10'
-    gen()
+    TargetDay = '2023-03-03'
+    gen(Farm,TargetDay)
