@@ -78,6 +78,7 @@ def gen(Farm,TargetDay): #TargetDay,Farm,Method
     print('Download')
     time.sleep(pa.waitseconds)
 
+    count = 0
     while 1:
         file = os.listdir(pa.DownloadPath)
         if len(file) == 0:
