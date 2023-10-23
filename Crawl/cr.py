@@ -3,6 +3,9 @@ import sys
 import time as time
 import pandas as pd
 import numpy as np
+import datetime as datetime
+import psycopg2
+import requests
 
 import params as pa
 
@@ -10,6 +13,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 
 
 def driversetting(DownloadPath):    #웹 들어가서 세팅하는 것 묻지도 말고 따지지도 말고 따라하자
@@ -87,19 +91,25 @@ def gen(Farm,TargetDay): #TargetDay,Farm,Method
             if count == 10:
                 break                               #30초 기다리고 없으면 빠져나와라
 
-        elif len(file) > 1:
-            break
+        elif len(file) > 0:
+            TargetFile = 'TimeData_' + Today + '.xls'
 
-        elif len(file) == 1:
+            if TargetFile in file:
+                breaker = 0
+                for f2 in file:
+                    if f2 == TargetFile:
+                        FileName = os.path.join(pa.DownloadPath, f2)
+                        breaker = 1
+                        break
 
-            if file == 'TimeData_'+ TargetDay+'.xls':
-                FileName =  os.path.join(pa.DownloadPath,file)
-                Data = pd.read_csv(FileName)
+                if breaker == 1:
+                    break
 
+    Data = genuploader(FileName, Farm)
 
-
-
-    return []
+    fileremover()
+    driver.close()
+    return Data
 
 if __name__ == '__main__':  #cr.py 실행하면 얘부터 실행 다른 곳에서 함수 불러올 때는 위에서부터 쭈욱 사용
     Farm = 1
