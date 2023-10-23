@@ -5,7 +5,7 @@ waitseconds = 2
 
 HYOSUNG = 'http://hess.hyosung.com/HsMain/HM020.aspx'
 
-DownloadPath = r"\Users\aude3\Downloads\Advanced"
+DownloadPath = r"C:\Users\aude3\Downloads\Advanced"
 
 #아래는 가급적 다른 파일에 저장하는게 좋다
 user = 'postgres'

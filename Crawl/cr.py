@@ -24,8 +24,8 @@ def driversetting(DownloadPath):    #웹 들어가서 세팅하는 것 묻지도
     # if 1:
     # options.add_argument('headless') 헤드레스가 되면 크롬창 열리지 않고 들어가는 것
 
-    options.add_argument('--no-sandbox')
-    options.add_argument('--disable-dev-shm-usage')
+    #options.add_argument('--no-sandbox')
+    #options.add_argument('--disable-dev-shm-usage')
 
     driver = webdriver.Chrome(options=options)
     driver.implicitly_wait(pa.waitseconds)
