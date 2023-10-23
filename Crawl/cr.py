@@ -60,8 +60,12 @@ def gen(Farm,TargetDay): #TargetDay,Farm,Method
     time.sleep(pa.waitseconds)
 
     # 계속 뜨는 팝업 닫기
-    driver.find_element(By.XPATH, '// *[ @ id = "popupContainer"]/div/div/div/div[2]/button[2]').click()
-    print('팝업 닫기')
+    try:
+     driver.find_element(By.XPATH, '// *[ @ id = "popupContainer"]/div/div/div/div[2]/button[2]').click()
+     print('팝업 닫기')
+    except Exception as err:
+        print(err)
+        print("there is no popup")
     time.sleep(pa.waitseconds)
 
     driver.find_element(By.XPATH, '//*[@id="form1"]/div[4]/div[1]/div/ul[2]/a[5]/li').click()
@@ -91,6 +95,9 @@ def gen(Farm,TargetDay): #TargetDay,Farm,Method
     driver.find_element(By.XPATH, '// *[ @ id = "exldownbtn"]').click()
     print('Download')
     time.sleep(pa.waitseconds)
+
+    PreNow = datetime.datetime.today()
+    Today = PreNow.strftime("%Y-%m-%d")
 
     count = 0
     while 1:
@@ -146,6 +153,8 @@ def genuploader(FilePath, Farm):
     Result = Result.loc[RealGen[0], :]
 
     Result = Result.assign(target=pd.to_datetime(Result["target"],format='%Y-%m-%d %H:%M', utc=False).dt.tz_localize(None))
+    #들어온 문자열을 시간개념으로 바꾸어라
+
     Result = Result.assign(site_id=Farm)
 
 
