@@ -35,6 +35,16 @@ def driversetting(DownloadPath):    #웹 들어가서 세팅하는 것 묻지도
     driver.implicitly_wait(pa.waitseconds)
 
     return driver
+def fileremover():
+    file2 = os.listdir(pa.DownloadPath)
+    for f2 in file2:
+        if f2 =='.DS_Store':
+            continue
+        else:
+            FileName = os.path.join(pa.DownloadPath, f2)
+            os.remove(FileName)
+    return []
+
 
 def gen(Farm,TargetDay): #TargetDay,Farm,Method
     driver = driversetting(pa.DownloadPath)
@@ -110,6 +120,68 @@ def gen(Farm,TargetDay): #TargetDay,Farm,Method
     fileremover()
     driver.close()
     return Data
+
+
+def genuploader(FilePath, Farm):
+
+    # Bring DB
+    conn = psycopg2.connect(host=pa.host, dbname=pa.dbname, user=pa.user, password=pa.password, port=pa.port)
+    cur = conn.cursor()
+
+    # Safe Margin two hours
+    Now = datetime.datetime.today() - datetime.timedelta(hours=3)
+
+    # Read
+    # lxml
+    xls_pv_html = pd.read_html(FilePath)[0]
+
+    # Manipulation
+    Result = pd.DataFrame(columns=['target', 'actual'])
+    Result = Result.assign(target=xls_pv_html['시간', '시간'])
+    Result = Result.assign(actual=xls_pv_html['생산량(kWh)', 'PV 발전량'])
+    Result = Result.assign(actual=Result['actual'].round(0))
+    Result.index = range(0, len(Result))
+
+    RealGen = np.where(Result['target'] != 'Sum')
+    Result = Result.loc[RealGen[0], :]
+
+    Result = Result.assign(target=pd.to_datetime(Result["target"],format='%Y-%m-%d %H:%M', utc=False).dt.tz_localize(None))
+    Result = Result.assign(site_id=Farm)
+
+
+
+
+    for i in range(0, len(Result)):
+        # print(Result.loc[i:i,:]
+        Target = Result.loc[i, 'target']
+        SiteID = Result.loc[i, 'site_id']
+        Actual = Result.loc[i, 'actual']
+
+        # To make it sure, we only accept past data.
+        if Target > Now:
+            continue
+
+        select_all_sql = f"select EXISTS(select * from solar " \
+                         f"where target = TIMESTAMP '%s' AND site_id = %s)" % (Target, SiteID)
+
+        cur.execute(select_all_sql)
+        Exists = cur.fetchone()[0]
+
+        if not Exists:
+            print("Upload: ",Target, Actual, SiteID)
+            query = """ INSERT INTO solar (target,actual,site_id) values (TIMESTAMP '%s',%s,%s) """ % (
+            Target, Actual, SiteID)
+            cur.execute(query)
+
+        else:
+            print("Duplicated ",Target, Actual, SiteID)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return Result
+
 
 if __name__ == '__main__':  #cr.py 실행하면 얘부터 실행 다른 곳에서 함수 불러올 때는 위에서부터 쭈욱 사용
     Farm = 1
