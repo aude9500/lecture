@@ -46,7 +46,7 @@ def fileremover():
     return []
 
 
-def gen(Farm,TargetDay): #TargetDay,Farm,Method
+def GetGenData(Farm,TargetDay): #TargetDay,Farm,Method
     driver = driversetting(pa.DownloadPath)
 
     driver.get(pa.HYOSUNG)
@@ -178,13 +178,10 @@ def genuploader(FilePath, Farm):
 
         if not Exists:
             print("Upload: ",Target, Actual, SiteID)
-            query = """ INSERT INTO solar (target,actual,site_id) values (TIMESTAMP '%s',%s,%s) """ % (
-            Target, Actual, SiteID)
+            query = """"""""" INSERT INTO solar (target,actual,site_id) values (TIMESTAMP '%s',%s,%s) """ % (Target, Actual, SiteID)
             cur.execute(query)
-
         else:
             print("Duplicated ",Target, Actual, SiteID)
-
     conn.commit()
     cur.close()
     conn.close()
@@ -195,4 +192,4 @@ def genuploader(FilePath, Farm):
 if __name__ == '__main__':  #cr.py 실행하면 얘부터 실행 다른 곳에서 함수 불러올 때는 위에서부터 쭈욱 사용
     Farm = 1
     TargetDay = '2023-03-03'
-    gen(Farm,TargetDay)
+    Data = GetGenData(Farm,TargetDay)
