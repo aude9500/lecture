@@ -41,7 +41,42 @@ def CurrentCollector():
     PreNow = PreNow.replace(second=0,minute=0,microsecond=0)
     DF2=DF2.assign(Target=PreNow)
 
-    return[]
+    conn = psycopg2.connect(host=pa.host, dbname=pa.dbname, user=pa.user, password=pa.password, port=pa.port)
+    cur = conn.cursor()
+
+    Target = Result.loc[i, 'target']
+    LAT = DF2.loc[0, 'lat']
+    LON = DF2.loc[0, 'lon']
+    Temp = DF2.loc[0,'temp']
+    Dew = DF2.loc[0,'dewpt']
+
+    # To make it sure, we only accept past data.
+    if Target > Now:
+        continue
+
+    select_all_sql = f"select EXISTS(select * from solar " \
+                     f"where target = TIMESTAMP '%s' AND long = %s)" % (Target, LAT, LON)
+
+    cur.execute(select_all_sql)
+    Exists = cur.fetchone()[0]
+
+    if not Exists:
+        print("Upload: ", Target, Temp, Dew)
+        query = """ INSERT INTO solar (target,actual,site_id) values (TIMESTAMP '%s',%s,%s,%s) """ % (
+        Target, LAT, LONG, TEMP, Dew)
+        cur.execute(query)
+    else:
+        print("Duplicated ", Target, Temp, Dew)
+        query = """ UPDATE WEATHER SET temp = %s and dewpt = %s where target = TimeSTAMP '%s' AND lat = %s AND lon=%s """ % (Temp,Dew,Target,LAT, LON))
+
+
+conn.commit()
+cur.close()
+conn.close()
+
+
+
+    return DF2
 
 
 if __name__ == '__main__':
